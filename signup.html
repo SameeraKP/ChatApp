@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup | Chat App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-box">
+    <h2>Sign Up</h2>
+    <input type="text" id="username" placeholder="Choose username"><br>
+    <input type="password" id="passcode" placeholder="Choose passcode"><br>
+    <button onclick="signup()">Sign Up</button>
+    <p id="error" style="color: red;"></p>
+    <p>Already have an account? <a href="index.html">Login</a></p>
+  </div>
+
+  <script>
+    function signup() {
+      const username = document.getElementById("username").value;
+      const passcode = document.getElementById("passcode").value;
+
+      fetch("/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, passcode })
+      })
+      .then(res => {
+        if (res.status === 409) throw new Error("User exists");
+        if (!res.ok) throw new Error("Signup failed");
+        alert("Signup successful! Please log in.");
+        window.location.href = "index.html";
+      })
+      .catch(err => {
+        document.getElementById("error").innerText = err.message;
+      });
+    }
+  </script>
+</body>
+</html>
